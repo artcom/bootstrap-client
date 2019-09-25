@@ -1,0 +1,35 @@
+{
+  "name": "@artcom/bootstrap-client",
+  "version": "1.0.0",
+  "description": "A bootstrap-client to initialize services running in an ART+COM backend environment.",
+  "main": "dist/index.js",
+  "scripts": {
+    "lint": "eslint src/main.ts --fix",
+    "compile": "tsc",
+    "compile:watch": "tsc -w",
+    "prepublishOnly": "npm run lint && npm run compile",
+    "test": "jest"
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/artcom/bootstrap-client.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/bunyan": "^1.8.6",
+    "@types/jest": "^24.0.18",
+    "@types/node": "^12.7.7",
+    "@typescript-eslint/parser": "^2.3.1",
+    "eslint": "^6.4.0",
+    "eslint-config-artcom": "^0.10.1",
+    "eslint-plugin-import": "^2.18.2",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.6.3"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "bunyan": "^1.8.12",
+    "mqtt-topping": "^0.8.12"
+  }
+}

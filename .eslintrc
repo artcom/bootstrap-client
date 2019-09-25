@@ -1,0 +1,11 @@
+{
+  "extends": "artcom",
+  "rules": {
+    "no-unused-vars": "off",
+    "import/no-commonjs": "off"
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  }
+}
