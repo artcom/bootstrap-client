@@ -2,7 +2,7 @@
   "name": "@artcom/bootstrap-client",
   "version": "1.0.0",
   "description": "A bootstrap-client to initialize services running in an ART+COM backend environment.",
-  "main": "dist/index.js",
+  "main": "dist/main.js",
   "scripts": {
     "lint": "eslint src/main.ts --fix",
     "compile": "tsc",
@@ -11,8 +11,8 @@
     "test": "jest"
   },
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/artcom/bootstrap-client.git"
+    "type": "git",
+    "url": "https://github.com/artcom/bootstrap-client.git"
   },
   "license": "MIT",
   "devDependencies": {
