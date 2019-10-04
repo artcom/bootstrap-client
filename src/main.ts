@@ -21,7 +21,7 @@ type Init = {
   bootstrapData: BootstrapData
 }
 
-export default async function init(serviceId: string) : Promise<Init> {
+export = async function init(serviceId: string) : Promise<Init> {
   const logger = createLogger(serviceId)
   const bootstrapData = await getBootstrapData(logger)
 
