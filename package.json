@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "A bootstrap-client to initialize services running in an ART+COM backend environment.",
   "main": "dist/main.js",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "lint": "eslint src/main.ts --fix",
     "compile": "tsc",
