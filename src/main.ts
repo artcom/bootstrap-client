@@ -14,15 +14,20 @@ type BootstrapData = {
 
 type QueryConfig = (config : string) => any
 
-type Init = {
+type InitData = {
   logger: Logger,
   mqttClient: ClientWrapper,
   queryConfig: QueryConfig,
   bootstrapData: BootstrapData
 }
 
-export = async function init(serviceId: string) : Promise<Init> {
-  const logger = createLogger(serviceId)
+export = async function init(serviceId: string) : Promise<InitData> {
+  const logger = Logger.createLogger({
+    name: serviceId,
+    level: "debug",
+    serializers: { error: Logger.stdSerializers.err }
+  })
+
   const bootstrapData = await getBootstrapData(logger)
 
   const {
@@ -45,14 +50,6 @@ export = async function init(serviceId: string) : Promise<Init> {
   }
 
   return { logger, mqttClient, queryConfig, bootstrapData }
-}
-
-function createLogger(serviceId: string) : Logger {
-  return Logger.createLogger({
-    name: serviceId,
-    level: "debug",
-    serializers: { error: Logger.stdSerializers.err }
-  })
 }
 
 async function getBootstrapData(logger: Logger) : Promise<BootstrapData> {
