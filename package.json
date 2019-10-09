@@ -7,8 +7,7 @@
     "lint": "eslint src/main.ts --fix",
     "compile": "tsc",
     "compile:watch": "tsc -w",
-    "prepublishOnly": "npm run lint && npm run compile",
-    "test": "jest"
+    "prepublishOnly": "npm run lint && npm run compile"
   },
   "repository": {
     "type": "git",
