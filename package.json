@@ -17,6 +17,11 @@
     "url": "https://github.com/artcom/bootstrap-client.git"
   },
   "license": "MIT",
+  "keywords": [
+    "bootstrap",
+    "mqtt",
+    "config"
+  ],
   "devDependencies": {
     "@types/bunyan": "^1.8.6",
     "@types/node": "^12.7.12",
