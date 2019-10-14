@@ -13,7 +13,7 @@ Bootstrap as follows:
 ```javascript
 const bootstrap = require("@artcom/bootstrap-client")
 
-bootstrap(bootstrapUri, serviceId).then(async ({ logger, mqttClient, queryConfig, bootstrapData }) => {
+bootstrap(bootstrapUrl, serviceId).then(async ({ logger, mqttClient, queryConfig, data }) => {
   // log something
   logger.info("Hello world!")
 
@@ -24,6 +24,9 @@ bootstrap(bootstrapUri, serviceId).then(async ({ logger, mqttClient, queryConfig
   const myConfig = await queryConfig("config/path")
 
   // use raw bootstrap data
-  logger.info(`I am running on device: ${bootstrapData.device}`)
+  logger.info(`I am running on device: ${data.device}`)
 })
 ```
+The following additional options are supported:
+* `timeout`: is the time in milliseconds until the query times out
+* `retryDelay` is the time in milliseconds until the query is sent again

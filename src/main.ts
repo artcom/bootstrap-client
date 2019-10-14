@@ -2,9 +2,6 @@ import axios from "axios"
 import topping, { ClientWrapper } from "mqtt-topping"
 import * as Logger from "bunyan"
 
-const QUERY_TIMEOUT = 2000
-const QUERY_RETRY_DELAY = 1000
-
 type BootstrapData = {
   backendHost: string,
   configServerUri: string,
@@ -15,32 +12,52 @@ type BootstrapData = {
   wsBrokerUri: string,
 }
 
-type QueryConfig = (configPath : string) => any
+type QueryConfig = (configPath: string) => any
 
 type InitData = {
   logger: Logger,
   mqttClient: ClientWrapper,
   queryConfig: QueryConfig,
-  bootstrapData: BootstrapData
+  data: BootstrapData
 }
 
-export = async function init(bootstrapUrl: string, serviceId: string) : Promise<InitData> {
+type Options = {
+  timeout?: number,
+  retryDelay?: number
+}
+
+export = async function init(
+  url: string,
+  serviceId: string,
+  { timeout = 2000, retryDelay = 10000 }: Options = {}
+): Promise<InitData> {
   const logger = Logger.createLogger({
     name: serviceId,
     level: "debug",
     serializers: { error: Logger.stdSerializers.err }
   })
 
-  logger.info({ bootstrapUrl }, "Retrieving bootstrap data from server")
-  const bootstrapData = await queryBootstrapData(bootstrapUrl)
-  logger.info(bootstrapData, "Bootstrap data retrieved from server")
+  async function query(): Promise<BootstrapData> {
+    logger.info({ url }, "Querying bootstrap data")
+    try {
+      const response = await axios.get(url, { timeout })
+      return response.data
+    } catch (error) {
+      logger.error({ error: error.message }, `Query failed. Retrying in ${retryDelay}ms...`)
+      await delay(retryDelay)
+      return await query()
+    }
+  }
+
+  const data = await query()
+  logger.info({ data }, "Bootstrap data received")
 
   const {
     device,
     tcpBrokerUri,
     httpBrokerUri,
     configServerUri
-  } = bootstrapData
+  } = data
 
   const clientId = createClientId(serviceId, device)
   logger.info({ tcpBrokerUri, httpBrokerUri, clientId }, "Connecting to Broker")
@@ -54,17 +71,7 @@ export = async function init(bootstrapUrl: string, serviceId: string) : Promise<
     return axios(`${configServerUri}/${version}/${configPath}`)
   }
 
-  return { logger, mqttClient, queryConfig, bootstrapData }
-}
-
-async function queryBootstrapData(url: string): Promise<BootstrapData> {
-  try {
-    const response = await axios.get(url, { timeout: QUERY_TIMEOUT })
-    return response.data
-  } catch (e) {
-    await delay(QUERY_RETRY_DELAY)
-    return await queryBootstrapData(url)
-  }
+  return { logger, mqttClient, queryConfig, data }
 }
 
 function delay(time: number) {
