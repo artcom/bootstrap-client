@@ -1,6 +1,6 @@
 # Bootstrap Client
 
-Queries bootstrap data from a bootstrap server and initializes an MQTT client and a logger for services.
+Queries bootstrap data from the [bootstrap server](https://github.com/artcom/bootstrap-server) and initializes an MQTT client and a logger for services.
 
 # Usage
 
