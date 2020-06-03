@@ -49,15 +49,15 @@ export = async function init(
     }
   }
 
-  const data = await query()
-  logger.info({ data }, "Bootstrap data received")
+  const bootstrapData = await query()
+  logger.info({ bootstrapData }, "Bootstrap data received")
 
   const {
     device,
     tcpBrokerUri,
     httpBrokerUri,
     configServerUri
-  } = data
+  } = bootstrapData
 
   const clientId = createClientId(serviceId, device)
   logger.info({ tcpBrokerUri, httpBrokerUri, clientId }, "Connecting to Broker")
@@ -68,10 +68,10 @@ export = async function init(
   mqttClient.on("error", () => { logger.error("Error Connecting to Broker") })
 
   async function queryConfig(configPath: string, version: string = "master") {
-    return axios(`${configServerUri}/${version}/${configPath}`)
+    return axios(`${configServerUri}/${version}/${configPath}`).then(({ data }) => data)
   }
 
-  return { logger, mqttClient, queryConfig, data }
+  return { logger, mqttClient, queryConfig, data: bootstrapData }
 }
 
 function delay(time: number) {
