@@ -1,6 +1,6 @@
 import axios from "axios"
 import topping, { ClientWrapper } from "mqtt-topping"
-import * as Logger from "bunyan"
+import { createLogger, Winston } from "@artcom/logger"
 
 type BootstrapData = {
   backendHost: string,
@@ -15,7 +15,7 @@ type BootstrapData = {
 type QueryConfig = (configPath: string) => any
 
 type InitData = {
-  logger: Logger,
+  logger: Winston.Logger,
   mqttClient: ClientWrapper,
   queryConfig: QueryConfig,
   data: BootstrapData
@@ -26,31 +26,28 @@ type Options = {
   retryDelay?: number
 }
 
+
 export = async function init(
   url: string,
   serviceId: string,
   { timeout = 2000, retryDelay = 10000 }: Options = {}
 ): Promise<InitData> {
-  const logger = Logger.createLogger({
-    name: serviceId,
-    level: "debug",
-    serializers: { error: Logger.stdSerializers.err }
-  })
+  const logger = createLogger()
 
   async function query(): Promise<BootstrapData> {
-    logger.info({ url }, "Querying bootstrap data")
+    logger.info("Querying bootstrap data", { url })
     try {
       const response = await axios.get(url, { timeout })
       return response.data
     } catch (error) {
-      logger.error({ error: error.message }, `Query failed. Retrying in ${retryDelay}ms...`)
+      logger.error(`Query failed. Retrying in ${retryDelay}ms...`, { error: error.message })
       await delay(retryDelay)
       return await query()
     }
   }
 
   const bootstrapData = await query()
-  logger.info({ bootstrapData }, "Bootstrap data received")
+  logger.info("Bootstrap data received", { bootstrapData })
 
   const {
     device,
@@ -60,7 +57,7 @@ export = async function init(
   } = bootstrapData
 
   const clientId = createClientId(serviceId, device)
-  logger.info({ tcpBrokerUri, httpBrokerUri, clientId }, "Connecting to Broker")
+  logger.info("Connecting to Broker", { tcpBrokerUri, httpBrokerUri, clientId })
   const mqttClient = topping.connect(tcpBrokerUri, httpBrokerUri, { clientId })
 
   mqttClient.on("connect", () => { logger.info("Connected to Broker") })
