@@ -47,7 +47,7 @@ export = async function init(
   }
 
   const bootstrapData = await query()
-  logger.info("Bootstrap data received", { bootstrapData })
+  logger.info("Bootstrap data received", { ...bootstrapData })
 
   const {
     device,
