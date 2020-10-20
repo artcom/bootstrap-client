@@ -2,7 +2,7 @@
 
 Queries bootstrap data from the [bootstrap server](https://github.com/artcom/bootstrap-server) and initializes an MQTT client and a logger for services.
 
-# Usage
+## Usage
 
 Install this library via npm:
 ```bash
@@ -32,7 +32,7 @@ The following additional options are supported:
 * `retryDelay`: is the time in milliseconds until the query is sent again, default: `10000`
 * `debugBootstrapData`: can be set to skip querying data from the `bootstrap-server` for debugging, default: `null`
 
-# Bootstrap Data
+## Bootstrap Data
 
 The client expects the following properties:
 
