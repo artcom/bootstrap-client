@@ -2,13 +2,10 @@ import { ClientWrapper } from "mqtt-topping"
 import { Winston } from "@artcom/logger"
 
 export type BootstrapData = {
-    backendHost: string,
     configServerUri: string,
     device: string,
-    deviceTopic: string,
     httpBrokerUri: string,
-    tcpBrokerUri: string,
-    wsBrokerUri: string,
+    tcpBrokerUri: string
   }
 
 export type QueryConfig = (configPath: string) => any
