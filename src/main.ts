@@ -30,33 +30,60 @@ type Options = {
 export = async function init(
   url: string,
   serviceId: string,
-  { timeout = 2000, retryDelay = 10000 }: Options = {}
+  { timeout = 2000, retryDelay = 10000, debugBootstrapData = null }: Options = {}
 ): Promise<InitData> {
   const logger = createLogger()
 
-  async function query(): Promise<BootstrapData> {
+  const data = await retrieveBootstrapData(url, timeout, retryDelay, logger, debugBootstrapData)
+
+  return {
+    logger,
+    data,
+    mqttClient: connectMqttClient(serviceId, data, logger),
+    queryConfig: createQueryConfig(data.configServerUri)
+  }
+}
+
+async function retrieveBootstrapData(
+  url: string,
+  timeout: number,
+  retryDelay: number,
+  logger: Winston.Logger,
+  debugBootstrapData: BootstrapData
+) : Promise<BootstrapData> {
+  if (debugBootstrapData) {
+    logger.info("Using debug bootstrap data", { ...debugBootstrapData })
+
+    return debugBootstrapData
+  } else {
     logger.info("Querying bootstrap data", { url })
-    try {
-      const response = await axios.get(url, { timeout })
-      return response.data
-    } catch (error) {
-      logger.error(`Query failed. Retrying in ${retryDelay}ms...`, { error: error.message })
-      await delay(retryDelay)
-      return await query()
+
+    while (true) { // eslint-disable-line no-constant-condition
+      try {
+        const { data } = await axios.get(url, { timeout })
+        logger.info("Bootstrap data received", { ...data })
+
+        return data
+      } catch (error) {
+        logger.error(`Query failed. Retrying in ${retryDelay}ms...`, { error: error.message })
+
+        await delay(retryDelay)
+      }
     }
   }
+}
 
-  const bootstrapData = await query()
-  logger.info("Bootstrap data received", { ...bootstrapData })
+function delay(time: number) {
+  return new Promise(resolve => setTimeout(resolve, time))
+}
 
-  const {
-    device,
-    tcpBrokerUri,
-    httpBrokerUri,
-    configServerUri
-  } = bootstrapData
-
+function connectMqttClient(
+  serviceId: string,
+  { device, httpBrokerUri, tcpBrokerUri }: BootstrapData,
+  logger: Winston.Logger
+): ClientWrapper {
   const clientId = createClientId(serviceId, device)
+
   logger.info("Connecting to Broker", { tcpBrokerUri, httpBrokerUri, clientId })
   const mqttClient = topping.connect(tcpBrokerUri, httpBrokerUri, { clientId })
 
@@ -64,18 +91,15 @@ export = async function init(
   mqttClient.on("close", () => { logger.error("Disconnected from Broker") })
   mqttClient.on("error", () => { logger.error("Error Connecting to Broker") })
 
-  async function queryConfig(configPath: string, version: string = "master") {
-    return axios(`${configServerUri}/${version}/${configPath}`).then(({ data }) => data)
-  }
-
-  return { logger, mqttClient, queryConfig, data: bootstrapData }
-}
-
-function delay(time: number) {
-  return new Promise(resolve => setTimeout(resolve, time))
+  return mqttClient
 }
 
 function createClientId(serviceId: string, device: string) {
   const uuid = Math.random().toString(16).substr(2, 8)
   return `${serviceId}-${device}-${uuid}`
+}
+
+function createQueryConfig(configServerUri: string) : QueryConfig {
+  return async (configPath: string, version: string = "master") =>
+    axios(`${configServerUri}/${version}/${configPath}`).then(response => response.data)
 }
