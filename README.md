@@ -34,11 +34,12 @@ The following additional options are supported:
 
 ## Bootstrap Data
 
-The client expects the following properties:
+The client expects the following properties in the [bootstrap server](https://github.com/artcom/bootstrap-server) response or `debugBootstrapData`:
 
 ```typescript
 {
-  tcpBrokerUri: string,
+  tcpBrokerUri: string,     // is used in Node environments
+  wsBrokerUri: string,      // is used in browser environments
   httpBrokerUri: string,
   configServerUri: string,
   device: string
