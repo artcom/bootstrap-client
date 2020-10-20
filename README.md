@@ -30,7 +30,7 @@ bootstrap(bootstrapUrl, serviceId).then(async ({ logger, mqttClient, queryConfig
 The following additional options are supported:
 * `timeout`: is the time in milliseconds until the query times out, default: `2000`
 * `retryDelay`: is the time in milliseconds until the query is sent again, default: `10000`
-* `debugBootstrapData`: can be set to skip querying data from the `bootstrap-server` for debugging, default: `null`
+* `debugBootstrapData`: can be set to skip querying data from the [bootstrap server](https://github.com/artcom/bootstrap-server) for debugging, default: `null`
 
 ## Bootstrap Data
 
