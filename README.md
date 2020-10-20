@@ -38,10 +38,10 @@ The client expects the following properties:
 
 ```typescript
 {
-  configServerUri: string,
-  device: string,
+  tcpBrokerUri: string,
   httpBrokerUri: string,
-  tcpBrokerUri: string
+  configServerUri: string,
+  device: string
 }
 ```
 
