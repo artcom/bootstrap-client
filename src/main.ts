@@ -2,30 +2,7 @@ import axios from "axios"
 import topping, { ClientWrapper } from "mqtt-topping"
 import { createLogger, Winston } from "@artcom/logger"
 
-type BootstrapData = {
-  backendHost: string,
-  configServerUri: string,
-  device: string,
-  deviceTopic: string,
-  httpBrokerUri: string,
-  tcpBrokerUri: string,
-  wsBrokerUri: string,
-}
-
-type QueryConfig = (configPath: string) => any
-
-type InitData = {
-  logger: Winston.Logger,
-  mqttClient: ClientWrapper,
-  queryConfig: QueryConfig,
-  data: BootstrapData
-}
-
-type Options = {
-  timeout?: number,
-  retryDelay?: number
-}
-
+import { BootstrapData, InitData, Options, QueryConfig } from "./types"
 
 export = async function init(
   url: string,
