@@ -56,14 +56,13 @@ function delay(time: number) {
 
 function connectMqttClient(
   serviceId: string,
-  { device, httpBrokerUri, tcpBrokerUri, wsBrokerUri }: BootstrapData,
+  { device, httpBrokerUri, tcpBrokerUri }: BootstrapData,
   logger: Winston.Logger
 ): ClientWrapper {
   const clientId = createClientId(serviceId, device)
 
-  const mqttBrokerUri = process?.versions?.node ? tcpBrokerUri : wsBrokerUri
-  logger.info("Connecting to Broker", { mqttBrokerUri, httpBrokerUri, clientId })
-  const mqttClient = topping.connect(mqttBrokerUri, httpBrokerUri, { clientId })
+  logger.info("Connecting to Broker", { tcpBrokerUri, httpBrokerUri, clientId })
+  const mqttClient = topping.connect(tcpBrokerUri, httpBrokerUri, { clientId })
 
   mqttClient.on("connect", () => { logger.info("Connected to Broker") })
   mqttClient.on("close", () => { logger.error("Disconnected from Broker") })

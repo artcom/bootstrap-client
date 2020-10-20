@@ -38,8 +38,7 @@ The client expects the following properties in the [bootstrap server](https://gi
 
 ```typescript
 {
-  tcpBrokerUri: string,     // is used in Node environments
-  wsBrokerUri: string,      // is used in browser environments
+  tcpBrokerUri: string,
   httpBrokerUri: string,
   configServerUri: string,
   device: string
