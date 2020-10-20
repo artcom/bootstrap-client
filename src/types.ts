@@ -5,7 +5,8 @@ export type BootstrapData = {
     configServerUri: string,
     device: string,
     httpBrokerUri: string,
-    tcpBrokerUri: string
+    tcpBrokerUri: string,
+    wsBrokerUri: string
   }
 
 export type QueryConfig = (configPath: string) => any
