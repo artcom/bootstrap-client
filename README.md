@@ -36,7 +36,7 @@ The following additional options are supported:
 
 The client expects the following properties:
 
-```javascript
+```typescript
 {
   configServerUri: string,
   device: string,
