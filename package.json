@@ -1,6 +1,6 @@
 {
   "name": "@artcom/bootstrap-client",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "A library which queries and processes bootstrap data from a bootstrap server.",
   "main": "dist/main.js",
   "files": [
