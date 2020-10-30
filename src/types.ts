@@ -22,3 +22,8 @@ export type Options = {
     retryDelay?: number,
     debugBootstrapData?: BootstrapData
   }
+
+export type QueryParams = {
+    version?: string,
+    listFiles?: boolean
+  }

@@ -2,7 +2,7 @@ import axios from "axios"
 import topping, { ClientWrapper } from "mqtt-topping"
 import { createLogger, Winston } from "@artcom/logger"
 
-import { BootstrapData, InitData, Options, QueryConfig } from "./types"
+import { BootstrapData, InitData, Options, QueryConfig, QueryParams } from "./types"
 
 export = async function init(
   url: string,
@@ -77,6 +77,7 @@ function createClientId(serviceId: string, device: string) {
 }
 
 function createQueryConfig(configServerUri: string) : QueryConfig {
-  return async (configPath: string, version: string = "master") =>
-    axios(`${configServerUri}/${version}/${configPath}`).then(response => response.data)
+  return async (configPath: string, { version = "master", listFiles = false }: QueryParams = {}) =>
+    axios(`${configServerUri}/${version}/${configPath}?listFiles=${listFiles}`)
+      .then(response => response.data)
 }
