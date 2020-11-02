@@ -25,5 +25,6 @@ export type Options = {
 
 export type QueryParams = {
     version?: string,
-    listFiles?: boolean
+    listFiles?: boolean,
+    includeCommitHash?: boolean
   }
