@@ -1,5 +1,5 @@
-import { ClientWrapper } from "mqtt-topping"
 import { Winston } from "@artcom/logger"
+import { HttpClient, MqttClient } from "@artcom/mqtt-topping"
 
 export type BootstrapData = {
     configServerUri: string,
@@ -12,7 +12,8 @@ export type QueryConfig = (configPath: string) => any
 
 export type InitData = {
     logger: Winston.Logger,
-    mqttClient: ClientWrapper,
+    mqttClient: MqttClient,
+    httpClient: HttpClient,
     queryConfig: QueryConfig,
     data: BootstrapData
   }

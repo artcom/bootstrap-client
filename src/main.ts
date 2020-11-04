@@ -1,5 +1,5 @@
 import axios from "axios"
-import topping, { ClientWrapper } from "mqtt-topping"
+import { connect, HttpClient, MqttClient } from "@artcom/mqtt-topping"
 import { createLogger, Winston } from "@artcom/logger"
 
 import { BootstrapData, InitData, Options, QueryConfig, QueryParams } from "./types"
@@ -17,6 +17,7 @@ export = async function init(
     logger,
     data,
     mqttClient: connectMqttClient(serviceId, data, logger),
+    httpClient: new HttpClient(data.httpBrokerUri),
     queryConfig: createQueryConfig(data.configServerUri)
   }
 }
@@ -56,13 +57,13 @@ function delay(time: number) {
 
 function connectMqttClient(
   serviceId: string,
-  { device, httpBrokerUri, tcpBrokerUri }: BootstrapData,
+  { device, tcpBrokerUri }: BootstrapData,
   logger: Winston.Logger
-): ClientWrapper {
+): MqttClient {
   const clientId = createClientId(serviceId, device)
 
-  logger.info("Connecting to Broker", { tcpBrokerUri, httpBrokerUri, clientId })
-  const mqttClient = topping.connect(tcpBrokerUri, httpBrokerUri, { clientId })
+  logger.info("Connecting to Broker", { tcpBrokerUri, clientId })
+  const mqttClient = connect(tcpBrokerUri, { clientId })
 
   mqttClient.on("connect", () => { logger.info("Connected to Broker") })
   mqttClient.on("close", () => { logger.error("Disconnected from Broker") })
