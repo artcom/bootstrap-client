@@ -2,9 +2,9 @@
   "name": "@artcom/bootstrap-client",
   "version": "2.5.0",
   "description": "A library which queries and processes bootstrap data from a bootstrap server.",
-  "main": "dist/main.js",
+  "main": "lib/main.js",
   "files": [
-    "dist/"
+    "lib/"
   ],
   "scripts": {
     "lint": "eslint --ext .ts src --fix",
