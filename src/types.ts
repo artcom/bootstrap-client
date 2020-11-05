@@ -8,7 +8,13 @@ export type BootstrapData = {
     tcpBrokerUri: string
   }
 
-export type QueryConfig = (configPath: string) => any
+export type QueryParams = {
+    version?: string,
+    listFiles?: boolean,
+    includeCommitHash?: boolean
+  }
+
+export type QueryConfig = (configPath: string, params: QueryParams) => any
 
 export type InitData = {
     logger: Winston.Logger,
@@ -22,10 +28,4 @@ export type Options = {
     timeout?: number,
     retryDelay?: number,
     debugBootstrapData?: BootstrapData
-  }
-
-export type QueryParams = {
-    version?: string,
-    listFiles?: boolean,
-    includeCommitHash?: boolean
   }
