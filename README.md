@@ -21,7 +21,7 @@ bootstrap(bootstrapUrl, serviceId).then(async ({ logger, mqttClient, queryConfig
   mqttClient.publish("foo", "bar")
 
   // query some configurations with (optional) options
-  const myConfig = await queryConfig("config/path", { version: "master", listFiles: false, includeCommitHash = false })
+  const myConfig = await queryConfig("config/path", { version: "master", listFiles: false, includeCommitHash = false, parseJSON = true })
 
   // use raw bootstrap data
   logger.info(`I am running on device: ${data.device}`)

@@ -11,7 +11,8 @@ export type BootstrapData = {
 export type QueryParams = {
     version?: string,
     listFiles?: boolean,
-    includeCommitHash?: boolean
+    includeCommitHash?: boolean,
+    parseJSON?: boolean
   }
 
 export type QueryConfig = (configPath: string, params: QueryParams) => any

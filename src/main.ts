@@ -78,12 +78,22 @@ function createClientId(serviceId: string, device: string) {
 }
 
 function createQueryConfig(configServerUri: string) : QueryConfig {
-  return async (
-    configPath: string,
-    { version = "master", listFiles = false, includeCommitHash = false }: QueryParams = {}
-  ) =>
-    axios(`${configServerUri}/${version}/${configPath}?listFiles=${listFiles}`)
+  return async (configPath: string, params: QueryParams = {}) => {
+    const {
+      version = "master",
+      listFiles = false,
+      includeCommitHash = false,
+      parseJSON = true
+    } = params
+
+    const query: any = {
+      url: `${configServerUri}/${version}/${configPath}?listFiles=${listFiles}`,
+      transformResponse: parseJSON ? undefined : []
+    }
+
+    return axios(query)
       .then(response => includeCommitHash
         ? { data: response.data, commitHash: response.headers["git-commit-hash"] }
         : response.data)
+  }
 }
