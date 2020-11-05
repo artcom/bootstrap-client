@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@artcom/logger": "^1.0.2",
-    "@artcom/mqtt-topping": "^2.2.0",
+    "@artcom/mqtt-topping": "^3.0.0",
     "axios": "^0.21.0"
   }
 }
