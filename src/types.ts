@@ -1,5 +1,5 @@
 import { Winston } from "@artcom/logger"
-import { HttpClient, MqttClient } from "@artcom/mqtt-topping"
+import { HttpClient, MqttClient, ErrorCallback } from "@artcom/mqtt-topping"
 
 export type BootstrapData = {
     configServerUri: string,
@@ -28,5 +28,6 @@ export type InitData = {
 export type Options = {
     timeout?: number,
     retryDelay?: number,
+    onParseError?: ErrorCallback,
     debugBootstrapData?: BootstrapData
   }

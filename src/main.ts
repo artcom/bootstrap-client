@@ -1,5 +1,5 @@
 import axios from "axios"
-import { connect, HttpClient, MqttClient } from "@artcom/mqtt-topping"
+import { connect, ErrorCallback, HttpClient, MqttClient } from "@artcom/mqtt-topping"
 import { createLogger, Winston } from "@artcom/logger"
 
 import { BootstrapData, InitData, Options, QueryConfig, QueryParams } from "./types"
@@ -7,7 +7,8 @@ import { BootstrapData, InitData, Options, QueryConfig, QueryParams } from "./ty
 export = async function init(
   url: string,
   serviceId: string,
-  { timeout = 2000, retryDelay = 10000, debugBootstrapData = null }: Options = {}
+  { timeout = 2000, retryDelay = 10000, debugBootstrapData = null, onParseError = null }
+  : Options = {}
 ): Promise<InitData> {
   const logger = createLogger()
 
@@ -16,7 +17,7 @@ export = async function init(
   return {
     logger,
     data,
-    mqttClient: connectMqttClient(serviceId, data, logger),
+    mqttClient: connectMqttClient(serviceId, data, onParseError, logger),
     httpClient: new HttpClient(data.httpBrokerUri),
     queryConfig: createQueryConfig(data.configServerUri)
   }
@@ -58,12 +59,13 @@ function delay(time: number) {
 function connectMqttClient(
   serviceId: string,
   { device, tcpBrokerUri }: BootstrapData,
+  onParseError: ErrorCallback,
   logger: Winston.Logger
 ): MqttClient {
   const clientId = createClientId(serviceId, device)
 
   logger.info("Connecting to Broker", { tcpBrokerUri, clientId })
-  const mqttClient = connect(tcpBrokerUri, { clientId })
+  const mqttClient = connect(tcpBrokerUri, { clientId, onParseError })
 
   mqttClient.on("connect", () => { logger.info("Connected to Broker") })
   mqttClient.on("close", () => { logger.error("Disconnected from Broker") })
