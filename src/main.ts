@@ -1,5 +1,11 @@
 import axios from "axios"
-import { connect, ErrorCallback, HttpClient, MqttClient } from "@artcom/mqtt-topping"
+import {
+  connect,
+  ErrorCallback,
+  HttpClient,
+  MqttClient,
+  unpublishRecursively
+} from "@artcom/mqtt-topping"
 import { createLogger, Winston } from "@artcom/logger"
 
 import { BootstrapData, InitData, Options, QueryConfig, QueryParams } from "./types"
@@ -19,7 +25,8 @@ export = async function init(
     data,
     mqttClient: connectMqttClient(serviceId, data, onParseError, logger),
     httpClient: new HttpClient(data.httpBrokerUri),
-    queryConfig: createQueryConfig(data.configServerUri)
+    queryConfig: createQueryConfig(data.configServerUri),
+    unpublishRecursively
   }
 }
 
