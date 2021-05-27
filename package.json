@@ -23,16 +23,16 @@
     "config"
   ],
   "devDependencies": {
-    "@types/node": "^15.0.2",
-    "@typescript-eslint/parser": "^4.22.1",
-    "eslint": "^7.26.0",
+    "@types/node": "^15.6.1",
+    "@typescript-eslint/parser": "^4.25.0",
+    "eslint": "^7.27.0",
     "eslint-config-artcom": "^0.11.0",
-    "eslint-plugin-import": "^2.22.1",
-    "typescript": "^4.2.4"
+    "eslint-plugin-import": "^2.23.3",
+    "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@artcom/logger": "^1.1.0",
-    "@artcom/mqtt-topping": "^3.0.3",
+    "@artcom/logger": "^1.2.0",
+    "@artcom/mqtt-topping": "^3.0.4",
     "axios": "^0.21.1"
   }
 }
