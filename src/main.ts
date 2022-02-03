@@ -39,26 +39,31 @@ async function retrieveBootstrapData(
   timeout: number,
   retryDelay: number,
   logger: Winston.Logger,
-  debugBootstrapData: BootstrapData
-) : Promise<BootstrapData> {
+  debugBootstrapData: BootstrapData,
+): Promise<BootstrapData> {
   if (debugBootstrapData) {
     logger.info("Using debug bootstrap data", { ...debugBootstrapData })
 
     return debugBootstrapData
-  } else {
-    logger.info("Querying bootstrap data", { url })
+  }
 
-    while (true) { // eslint-disable-line no-constant-condition
-      try {
-        const { data } = await axios.get(url, { timeout })
-        logger.info("Bootstrap data received", { ...data })
+  if (!url) {
+    return null
+  }
 
-        return data
-      } catch (error) {
-        logger.error(`Query failed. Retrying in ${retryDelay}ms...`, { error: error.message })
+  logger.info("Querying bootstrap data", { url })
 
-        await delay(retryDelay)
-      }
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    try {
+      const { data } = await axios.get(url, { timeout })
+      logger.info("Bootstrap data received", { ...data })
+
+      return data
+    } catch (error) {
+      logger.error(`Query failed. Retrying in ${retryDelay}ms...`, { error: error.message })
+
+      await delay(retryDelay)
     }
   }
 }
