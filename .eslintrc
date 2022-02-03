@@ -1,8 +1,5 @@
 {
-  "extends": [
-    "artcom",
-    "plugin:import/typescript"
-  ],
+  "extends": ["artcom", "plugin:import/typescript"],
   "rules": {
     "no-unused-vars": "off"
   },

@@ -5,11 +5,13 @@ Queries bootstrap data from the [bootstrap server](https://github.com/artcom/boo
 ## Usage
 
 Install this library via npm:
+
 ```bash
 npm install @artcom/bootstrap-client
 ```
 
 Bootstrap as follows:
+
 ```javascript
 const bootstrap = require("@artcom/bootstrap-client")
 
@@ -27,10 +29,12 @@ bootstrap(bootstrapUrl, serviceId).then(async ({ logger, mqttClient, queryConfig
   logger.info(`I am running on device: ${data.device}`)
 })
 ```
+
 The following additional options are supported:
-* `timeout`: is the time in milliseconds until the query times out, default: `2000`
-* `retryDelay`: is the time in milliseconds until the query is sent again, default: `10000`
-* `debugBootstrapData`: can be set to skip querying data from the [bootstrap server](https://github.com/artcom/bootstrap-server) for debugging, default: `null`
+
+- `timeout`: is the time in milliseconds until the query times out, default: `2000`
+- `retryDelay`: is the time in milliseconds until the query is sent again, default: `10000`
+- `debugBootstrapData`: can be set to skip querying data from the [bootstrap server](https://github.com/artcom/bootstrap-server) for debugging, default: `null`
 
 ## Bootstrap Data
 

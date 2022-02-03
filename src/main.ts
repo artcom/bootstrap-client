@@ -4,7 +4,7 @@ import {
   ErrorCallback,
   HttpClient,
   MqttClient,
-  unpublishRecursively
+  unpublishRecursively,
 } from "@artcom/mqtt-topping"
 import { createLogger, Winston } from "@artcom/logger"
 
@@ -13,8 +13,12 @@ import { BootstrapData, InitData, Options, QueryConfig, QueryParams } from "./ty
 export = async function init(
   url: string,
   serviceId: string,
-  { timeout = 2000, retryDelay = 10000, debugBootstrapData = null, onParseError = null }
-  : Options = {}
+  {
+    timeout = 2000,
+    retryDelay = 10000,
+    debugBootstrapData = null,
+    onParseError = null,
+  }: Options = {},
 ): Promise<InitData> {
   const logger = createLogger()
 
@@ -26,7 +30,7 @@ export = async function init(
     mqttClient: connectMqttClient(serviceId, data, onParseError, logger),
     httpClient: new HttpClient(data.httpBrokerUri),
     queryConfig: createQueryConfig(data.configServerUri),
-    unpublishRecursively
+    unpublishRecursively,
   }
 }
 
@@ -60,23 +64,29 @@ async function retrieveBootstrapData(
 }
 
 function delay(time: number) {
-  return new Promise(resolve => setTimeout(resolve, time))
+  return new Promise((resolve) => setTimeout(resolve, time))
 }
 
 function connectMqttClient(
   serviceId: string,
   { device, tcpBrokerUri }: BootstrapData,
   onParseError: ErrorCallback,
-  logger: Winston.Logger
+  logger: Winston.Logger,
 ): MqttClient {
   const clientId = createClientId(serviceId, device)
 
   logger.info("Connecting to Broker", { tcpBrokerUri, clientId })
   const mqttClient = connect(tcpBrokerUri, { clientId, onParseError })
 
-  mqttClient.on("connect", () => { logger.info("Connected to Broker") })
-  mqttClient.on("close", () => { logger.error("Disconnected from Broker") })
-  mqttClient.on("error", () => { logger.error("Error Connecting to Broker") })
+  mqttClient.on("connect", () => {
+    logger.info("Connected to Broker")
+  })
+  mqttClient.on("close", () => {
+    logger.error("Disconnected from Broker")
+  })
+  mqttClient.on("error", () => {
+    logger.error("Error Connecting to Broker")
+  })
 
   return mqttClient
 }
@@ -86,23 +96,24 @@ function createClientId(serviceId: string, device: string) {
   return `${serviceId}-${device}-${uuid}`
 }
 
-function createQueryConfig(configServerUri: string) : QueryConfig {
+function createQueryConfig(configServerUri: string): QueryConfig {
   return async (configPath: string, params: QueryParams = {}) => {
     const {
       version = "master",
       listFiles = false,
       includeCommitHash = false,
-      parseJSON = true
+      parseJSON = true,
     } = params
 
     const query: any = {
       url: `${configServerUri}/${version}/${configPath}?listFiles=${listFiles}`,
-      transformResponse: parseJSON ? undefined : []
+      transformResponse: parseJSON ? undefined : [],
     }
 
-    return axios(query)
-      .then(response => includeCommitHash
+    return axios(query).then((response) =>
+      includeCommitHash
         ? { data: response.data, commitHash: response.headers["git-commit-hash"] }
-        : response.data)
+        : response.data,
+    )
   }
 }
