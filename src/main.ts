@@ -48,7 +48,15 @@ async function retrieveBootstrapData(
   }
 
   if (!url) {
-    return {}
+    const bootstrapData = {
+      tcpBrokerUri: process.env.TCP_BROKER_URI,
+      httpBrokerUri: process.env.HTTP_BROKER_URI,
+      configServerUri: process.env.CONFIG_SERVER_URI,
+      device: process.env.DEVICE,
+    }
+
+    logger.info("Using bootstrap data from environment", { ...bootstrapData })
+    return bootstrapData
   }
 
   logger.info("Querying bootstrap data", { url })
