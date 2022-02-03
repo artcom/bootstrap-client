@@ -27,10 +27,10 @@ export = async function init(
   return {
     logger,
     data,
-    mqttClient: connectMqttClient(serviceId, data, onParseError, logger),
-    httpClient: new HttpClient(data.httpBrokerUri),
-    queryConfig: createQueryConfig(data.configServerUri),
-    unpublishRecursively,
+    mqttClient: data.tcpBrokerUri ? connectMqttClient(serviceId, data, onParseError, logger) : null,
+    httpClient: data.httpBrokerUri ? new HttpClient(data.httpBrokerUri) : null,
+    queryConfig: data.configServerUri ? createQueryConfig(data.configServerUri) : null,
+    unpublishRecursively: data.tcpBrokerUri && data.httpBrokerUri ? unpublishRecursively : null,
   }
 }
 
@@ -48,7 +48,7 @@ async function retrieveBootstrapData(
   }
 
   if (!url) {
-    return null
+    return {}
   }
 
   logger.info("Querying bootstrap data", { url })
@@ -96,9 +96,13 @@ function connectMqttClient(
   return mqttClient
 }
 
-function createClientId(serviceId: string, device: string) {
+function createClientId(serviceId: string, device?: string) {
   const uuid = Math.random().toString(16).substr(2, 8)
-  return `${serviceId}-${device}-${uuid}`
+  if (device) {
+    return `${serviceId}-${device}-${uuid}`
+  } else {
+    return `${serviceId}-${uuid}`
+  }
 }
 
 function createQueryConfig(configServerUri: string): QueryConfig {

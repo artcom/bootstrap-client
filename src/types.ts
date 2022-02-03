@@ -2,10 +2,10 @@ import { Winston } from "@artcom/logger"
 import { HttpClient, MqttClient, ErrorCallback, unpublishRecursively } from "@artcom/mqtt-topping"
 
 export type BootstrapData = {
-  configServerUri: string
-  device: string
-  httpBrokerUri: string
-  tcpBrokerUri: string
+  configServerUri?: string
+  device?: string
+  httpBrokerUri?: string
+  tcpBrokerUri?: string
 }
 
 export type QueryParams = {
