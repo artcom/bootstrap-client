@@ -18,7 +18,7 @@ export = async function init(
     retryDelay = 10000,
     debugBootstrapData = null,
     onParseError = null,
-  }: Options = {},
+  }: Options = {}
 ): Promise<InitData> {
   const logger = createLogger()
 
@@ -39,7 +39,7 @@ async function retrieveBootstrapData(
   timeout: number,
   retryDelay: number,
   logger: Winston.Logger,
-  debugBootstrapData: BootstrapData,
+  debugBootstrapData: BootstrapData
 ): Promise<BootstrapData> {
   if (debugBootstrapData) {
     logger.info("Using debug bootstrap data", { ...debugBootstrapData })
@@ -84,7 +84,7 @@ function connectMqttClient(
   serviceId: string,
   { device, tcpBrokerUri }: BootstrapData,
   onParseError: ErrorCallback,
-  logger: Winston.Logger,
+  logger: Winston.Logger
 ): MqttClient {
   const clientId = createClientId(serviceId, device)
 
@@ -130,7 +130,7 @@ function createQueryConfig(configServerUri: string): QueryConfig {
     return axios(query).then((response) =>
       includeCommitHash
         ? { data: response.data, commitHash: response.headers["git-commit-hash"] }
-        : response.data,
+        : response.data
     )
   }
 }
