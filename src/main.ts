@@ -16,8 +16,8 @@ export = async function init(
   {
     timeout = 2000,
     retryDelay = 10000,
-    debugBootstrapData = null,
-    onParseError = null,
+    debugBootstrapData = undefined,
+    onParseError = undefined,
   }: Options = {}
 ): Promise<InitData> {
   const logger = createLogger()
@@ -27,10 +27,13 @@ export = async function init(
   return {
     logger,
     data,
-    mqttClient: data.tcpBrokerUri ? connectMqttClient(serviceId, data, onParseError, logger) : null,
-    httpClient: data.httpBrokerUri ? new HttpClient(data.httpBrokerUri) : null,
-    queryConfig: data.configServerUri ? createQueryConfig(data.configServerUri) : null,
-    unpublishRecursively: data.tcpBrokerUri && data.httpBrokerUri ? unpublishRecursively : null,
+    mqttClient: data.tcpBrokerUri
+      ? connectMqttClient(serviceId, data.tcpBrokerUri, data.device, onParseError, logger)
+      : undefined,
+    httpClient: data.httpBrokerUri ? new HttpClient(data.httpBrokerUri) : undefined,
+    queryConfig: data.configServerUri ? createQueryConfig(data.configServerUri) : undefined,
+    unpublishRecursively:
+      data.tcpBrokerUri && data.httpBrokerUri ? unpublishRecursively : undefined,
   }
 }
 
@@ -39,7 +42,7 @@ async function retrieveBootstrapData(
   timeout: number,
   retryDelay: number,
   logger: Winston.Logger,
-  debugBootstrapData: BootstrapData
+  debugBootstrapData?: BootstrapData
 ): Promise<BootstrapData> {
   if (debugBootstrapData) {
     logger.info("Using debug bootstrap data", { ...debugBootstrapData })
@@ -68,7 +71,7 @@ async function retrieveBootstrapData(
       logger.info("Bootstrap data received", { ...data })
 
       return data
-    } catch (error) {
+    } catch (error: any) {
       logger.error(`Query failed. Retrying in ${retryDelay}ms...`, { error: error.message })
 
       await delay(retryDelay)
@@ -82,8 +85,9 @@ function delay(time: number) {
 
 function connectMqttClient(
   serviceId: string,
-  { device, tcpBrokerUri }: BootstrapData,
-  onParseError: ErrorCallback,
+  tcpBrokerUri: string,
+  device: string | undefined,
+  onParseError: ErrorCallback | undefined,
   logger: Winston.Logger
 ): MqttClient {
   const clientId = createClientId(serviceId, device)
@@ -105,7 +109,7 @@ function connectMqttClient(
 }
 
 function createClientId(serviceId: string, device?: string) {
-  const uuid = Math.random().toString(16).substr(2, 8)
+  const uuid = Math.random().toString(16).substring(2, 10)
   if (device) {
     return `${serviceId}-${device}-${uuid}`
   } else {

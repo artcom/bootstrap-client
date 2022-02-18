@@ -19,11 +19,11 @@ export type QueryConfig = (configPath: string, params: QueryParams) => any
 
 export type InitData = {
   logger: Winston.Logger
-  mqttClient: MqttClient
-  httpClient: HttpClient
-  queryConfig: QueryConfig
+  mqttClient?: MqttClient
+  httpClient?: HttpClient
+  queryConfig?: QueryConfig
   data: BootstrapData
-  unpublishRecursively: typeof unpublishRecursively
+  unpublishRecursively?: typeof unpublishRecursively
 }
 
 export type Options = {
