@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "format": "prettier --write src",
-    "lint": "eslint --ext .ts src --fix",
+    "lint": "eslint src --fix",
     "build": "tsc",
     "build:watch": "tsc -w",
     "prepublishOnly": "npm run lint && npm run build"
@@ -17,21 +17,23 @@
     "type": "git",
     "url": "https://github.com/artcom/bootstrap-client.git"
   },
+  "type": "commonjs",
   "dependencies": {
-    "@artcom/logger": "^1.5.0",
-    "@artcom/mqtt-topping": "^3.3.3",
-    "axios": "^0.27.2"
+    "@artcom/logger": "^1.6.0",
+    "@artcom/mqtt-topping": "^4.0.0",
+    "axios": "^1.7.9"
   },
   "devDependencies": {
-    "@types/node": "^18.7.15",
-    "@types/ws": "^8.5.3",
-    "@typescript-eslint/eslint-plugin": "^5.36.1",
-    "@typescript-eslint/parser": "^5.36.1",
-    "eslint": "^8.23.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-import": "^2.26.0",
-    "prettier": "^2.7.1",
-    "typescript": "^4.8.2"
+    "@eslint/js": "^9.17.0",
+    "@types/node": "^22.10.2",
+    "@types/ws": "^8.5.13",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.31.0",
+    "globals": "^15.13.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.0"
   },
   "license": "MIT",
   "keywords": [
