@@ -15,6 +15,7 @@ export type QueryParams = {
   parseJSON?: boolean
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type QueryConfig = (configPath: string, params: QueryParams) => any
 
 export type InitData = {

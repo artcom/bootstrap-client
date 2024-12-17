@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios, { AxiosRequestConfig } from "axios"
 import {
   connect,
   ErrorCallback,
@@ -64,16 +64,21 @@ async function retrieveBootstrapData(
 
   logger.info("Querying bootstrap data", { url })
 
-  // eslint-disable-next-line no-constant-condition
+   
   while (true) {
     try {
       const { data } = await axios.get(url, { timeout })
       logger.info("Bootstrap data received", { ...data })
 
       return data
-    } catch (error: any) {
-      logger.error(`Query failed. Retrying in ${retryDelay}ms...`, { error: error.message })
-
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        logger.error(`Query failed. Retrying in ${retryDelay}ms...`, {
+          error: error.message,
+        })
+      } else {
+        logger.error("An unknown error occurred");
+      }
       await delay(retryDelay)
     }
   }
@@ -126,7 +131,7 @@ function createQueryConfig(configServerUri: string): QueryConfig {
       parseJSON = true,
     } = params
 
-    const query: any = {
+    const query: AxiosRequestConfig = {
       url: `${configServerUri}/${version}/${configPath}?listFiles=${listFiles}`,
       transformResponse: parseJSON ? undefined : [],
     }

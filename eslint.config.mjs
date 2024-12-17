@@ -5,11 +5,13 @@ import eslintConfigPrettier from "eslint-config-prettier"
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
-  { files: ["**/*.{js,mjs,cjs,ts}"] },
+  {
+    files: ["**/*.{js,mjs,cjs,ts}"],
+  },
   {
     languageOptions: {
       globals: globals.browser,
-      ecmaVersion: 2021,
+      ecmaVersion: "latest",
     },
   },
   pluginJs.configs.recommended,
