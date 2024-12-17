@@ -133,7 +133,7 @@ function createQueryConfig(configServerUri: string): QueryConfig {
 
     const query: AxiosRequestConfig = {
       url: `${configServerUri}/${version}/${configPath}?listFiles=${listFiles}`,
-      transformResponse: parseJSON ? undefined : [],
+      responseType: parseJSON ? "json" : "text"
     }
 
     return axios(query).then((response) =>
