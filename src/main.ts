@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios"
 import {
-  connect,
+  connectAsync,
   ErrorCallback,
   HttpClient,
   MqttClient,
@@ -28,7 +28,7 @@ export = async function init(
     logger,
     data,
     mqttClient: data.tcpBrokerUri
-      ? connectMqttClient(serviceId, data.tcpBrokerUri, data.device, onParseError, logger)
+      ? await connectMqttClient(serviceId, data.tcpBrokerUri, data.device, onParseError, logger)
       : undefined,
     httpClient: data.httpBrokerUri ? new HttpClient(data.httpBrokerUri) : undefined,
     queryConfig: data.configServerUri ? createQueryConfig(data.configServerUri) : undefined,
@@ -88,21 +88,19 @@ function delay(time: number) {
   return new Promise((resolve) => setTimeout(resolve, time))
 }
 
-function connectMqttClient(
+async function connectMqttClient(
   serviceId: string,
   tcpBrokerUri: string,
   device: string | undefined,
   onParseError: ErrorCallback | undefined,
   logger: Winston.Logger
-): MqttClient {
+): Promise<MqttClient> {
   const clientId = createClientId(serviceId, device)
 
   logger.info("Connecting to Broker", { tcpBrokerUri, clientId })
-  const mqttClient = connect(tcpBrokerUri, { clientId, onParseError })
+  const mqttClient = await connectAsync(tcpBrokerUri, { clientId, onParseError })
+  logger.info("Connected to Broker")  
 
-  mqttClient.on("connect", () => {
-    logger.info("Connected to Broker")
-  })
   mqttClient.on("close", () => {
     logger.error("Disconnected from Broker")
   })
