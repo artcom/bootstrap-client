@@ -130,7 +130,7 @@ function createQueryConfig(configServerUri: string): QueryConfig {
     } = params
 
     const query: AxiosRequestConfig = {
-      url: `${configServerUri}/${version}/${configPath}?listFiles=${listFiles}`,
+      url: `${configServerUri}/${encodeURIComponent(version)}/${configPath}?listFiles=${listFiles}`,
       responseType: parseJSON ? "json" : "text"
     }
 
