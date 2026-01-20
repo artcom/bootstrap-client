@@ -1,11 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios"
-import {
-  connectAsync,
-  ErrorCallback,
-  HttpClient,
-  MqttClient,
-  unpublishRecursively,
-} from "@artcom/mqtt-topping"
+import { HttpClient, MqttClient } from "@artcom/mqtt-topping"
 import { createLogger, Winston } from "@artcom/logger"
 
 import { BootstrapData, InitData, Options, QueryConfig, QueryParams } from "./types"
@@ -13,12 +7,7 @@ import { BootstrapData, InitData, Options, QueryConfig, QueryParams } from "./ty
 export = async function init(
   url: string,
   serviceId: string,
-  {
-    timeout = 2000,
-    retryDelay = 10000,
-    debugBootstrapData = undefined,
-    onParseError = undefined,
-  }: Options = {}
+  { timeout = 2000, retryDelay = 10000, debugBootstrapData = undefined }: Options = {},
 ): Promise<InitData> {
   const logger = createLogger()
 
@@ -28,12 +17,10 @@ export = async function init(
     logger,
     data,
     mqttClient: data.tcpBrokerUri
-      ? await connectMqttClient(serviceId, data.tcpBrokerUri, data.device, onParseError, logger)
+      ? await connectMqttClient(serviceId, data.tcpBrokerUri, data.device, logger)
       : undefined,
     httpClient: data.httpBrokerUri ? new HttpClient(data.httpBrokerUri) : undefined,
     queryConfig: data.configServerUri ? createQueryConfig(data.configServerUri) : undefined,
-    unpublishRecursively:
-      data.tcpBrokerUri && data.httpBrokerUri ? unpublishRecursively : undefined,
   }
 }
 
@@ -42,7 +29,7 @@ async function retrieveBootstrapData(
   timeout: number,
   retryDelay: number,
   logger: Winston.Logger,
-  debugBootstrapData?: BootstrapData
+  debugBootstrapData?: BootstrapData,
 ): Promise<BootstrapData> {
   if (debugBootstrapData) {
     logger.info("Using debug bootstrap data", { ...debugBootstrapData })
@@ -64,7 +51,6 @@ async function retrieveBootstrapData(
 
   logger.info("Querying bootstrap data", { url })
 
-   
   while (true) {
     try {
       const { data } = await axios.get(url, { timeout })
@@ -77,7 +63,7 @@ async function retrieveBootstrapData(
           error: error.message,
         })
       } else {
-        logger.error("An unknown error occurred");
+        logger.error("An unknown error occurred")
       }
       await delay(retryDelay)
     }
@@ -92,19 +78,18 @@ async function connectMqttClient(
   serviceId: string,
   tcpBrokerUri: string,
   device: string | undefined,
-  onParseError: ErrorCallback | undefined,
-  logger: Winston.Logger
+  logger: Winston.Logger,
 ): Promise<MqttClient> {
   const clientId = createClientId(serviceId, device)
 
   logger.info("Connecting to Broker", { tcpBrokerUri, clientId })
-  const mqttClient = await connectAsync(tcpBrokerUri, { clientId, onParseError })
-  logger.info("Connected to Broker")  
+  const mqttClient = await MqttClient.connect(tcpBrokerUri, { clientId })
+  logger.info("Connected to Broker")
 
-  mqttClient.on("close", () => {
+  mqttClient.underlyingClient.on("close", () => {
     logger.error("Disconnected from Broker")
   })
-  mqttClient.on("error", () => {
+  mqttClient.underlyingClient.on("error", () => {
     logger.error("Error Connecting to Broker")
   })
 
@@ -131,13 +116,13 @@ function createQueryConfig(configServerUri: string): QueryConfig {
 
     const query: AxiosRequestConfig = {
       url: `${configServerUri}/${encodeURIComponent(version)}/${configPath}?listFiles=${listFiles}`,
-      responseType: parseJSON ? "json" : "text"
+      responseType: parseJSON ? "json" : "text",
     }
 
     return axios(query).then((response) =>
       includeCommitHash
         ? { data: response.data, commitHash: response.headers["git-commit-hash"] }
-        : response.data
+        : response.data,
     )
   }
 }

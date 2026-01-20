@@ -1,5 +1,5 @@
 import { Winston } from "@artcom/logger"
-import { HttpClient, MqttClient, ErrorCallback, unpublishRecursively } from "@artcom/mqtt-topping"
+import { HttpClient, MqttClient } from "@artcom/mqtt-topping"
 
 export type BootstrapData = {
   configServerUri?: string
@@ -24,12 +24,10 @@ export type InitData = {
   httpClient?: HttpClient
   queryConfig?: QueryConfig
   data: BootstrapData
-  unpublishRecursively?: typeof unpublishRecursively
 }
 
 export type Options = {
   timeout?: number
   retryDelay?: number
-  onParseError?: ErrorCallback
   debugBootstrapData?: BootstrapData
 }
