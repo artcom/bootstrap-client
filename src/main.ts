@@ -2,16 +2,33 @@ import axios, { AxiosRequestConfig } from "axios"
 import { HttpClient, MqttClient } from "@artcom/mqtt-topping"
 import { createLogger, Winston } from "@artcom/logger"
 
-import { BootstrapData, InitData, Options, QueryConfig, QueryParams } from "./types"
+import * as Types from "./types"
 
-export = async function init(
+export = init
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+namespace init {
+  export type BootstrapData = Types.BootstrapData
+  export type InitData = Types.InitData
+  export type Options = Types.Options
+  export type QueryConfig = Types.QueryConfig
+  export type QueryParams = Types.QueryParams
+}
+
+async function init<T extends Types.BootstrapData = Types.BootstrapData>(
   url: string,
   serviceId: string,
-  { timeout = 2000, retryDelay = 10000, debugBootstrapData = undefined }: Options = {},
-): Promise<InitData> {
+  { timeout = 2000, retryDelay = 10000, debugBootstrapData = undefined }: Types.Options = {},
+): Promise<Types.InitData<T>> {
   const logger = createLogger()
 
-  const data = await retrieveBootstrapData(url, timeout, retryDelay, logger, debugBootstrapData)
+  const data = (await retrieveBootstrapData(
+    url,
+    timeout,
+    retryDelay,
+    logger,
+    debugBootstrapData,
+  )) as T
 
   return {
     logger,
@@ -21,7 +38,7 @@ export = async function init(
       : undefined,
     httpClient: data.httpBrokerUri ? new HttpClient(data.httpBrokerUri) : undefined,
     queryConfig: data.configServerUri ? createQueryConfig(data.configServerUri) : undefined,
-  }
+  } as Types.InitData<T>
 }
 
 async function retrieveBootstrapData(
@@ -29,8 +46,8 @@ async function retrieveBootstrapData(
   timeout: number,
   retryDelay: number,
   logger: Winston.Logger,
-  debugBootstrapData?: BootstrapData,
-): Promise<BootstrapData> {
+  debugBootstrapData?: Types.BootstrapData,
+): Promise<Types.BootstrapData> {
   if (debugBootstrapData) {
     logger.info("Using debug bootstrap data", { ...debugBootstrapData })
 
@@ -105,8 +122,8 @@ function createClientId(serviceId: string, device?: string) {
   }
 }
 
-function createQueryConfig(configServerUri: string): QueryConfig {
-  return async (configPath: string, params: QueryParams = {}) => {
+function createQueryConfig(configServerUri: string): Types.QueryConfig {
+  return async (configPath: string, params: Types.QueryParams = {}) => {
     const {
       version = "master",
       listFiles = false,
