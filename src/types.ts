@@ -38,7 +38,7 @@ export interface QueryConfig {
   /**
    * Queries configuration and parses it as JSON (default behavior).
    */
-  <T = any>(configPath: string, params?: QueryParams): Promise<T>
+  <T = unknown>(configPath: string, params?: QueryParams): Promise<T>
 }
 
 export type InitData<T extends BootstrapData = BootstrapData> = {
