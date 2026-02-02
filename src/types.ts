@@ -15,6 +15,11 @@ export type BootstrapData = {
   readonly tcpBrokerUri?: string
 }
 
+export type ConfigurationChangePayload = {
+  readonly changedFiles?: string[]
+  readonly refName?: string
+}
+
 export type QueryParams = {
   /** The version of the configuration to fetch (default: "master") */
   readonly version?: string
