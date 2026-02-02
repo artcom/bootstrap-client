@@ -1,21 +1,12 @@
 import axios, { AxiosRequestConfig } from "axios"
-import { HttpClient, MqttClient } from "@artcom/mqtt-topping"
+import { HttpClient, MqttClient, MessageCallback } from "@artcom/mqtt-topping"
 import { createLogger, Winston } from "@artcom/logger"
 
 import * as Types from "./types"
 
-export = init
+export * from "./types"
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
-namespace init {
-  export type BootstrapData = Types.BootstrapData
-  export type InitData = Types.InitData
-  export type Options = Types.Options
-  export type QueryConfig = Types.QueryConfig
-  export type QueryParams = Types.QueryParams
-}
-
-async function init<T extends Types.BootstrapData = Types.BootstrapData>(
+export async function init<T extends Types.BootstrapData = Types.BootstrapData>(
   url: string,
   serviceId: string,
   { timeout = 2000, retryDelay = 10000, debugBootstrapData = undefined }: Types.Options = {},
@@ -41,6 +32,37 @@ async function init<T extends Types.BootstrapData = Types.BootstrapData>(
     httpClient: data.httpBrokerUri ? new HttpClient(data.httpBrokerUri) : undefined,
     queryConfig: data.configServerUri ? createQueryConfig(data.configServerUri) : undefined,
   } as Types.InitData<T>
+}
+
+export function subscribeToConfigChange(
+  mqttClient: MqttClient,
+  configurationChangeTopic: string,
+  watchPaths: string[],
+  configVersion: string,
+  updateHandler: (() => Promise<void>) | (() => void),
+) {
+  const subscriptionHandler: MessageCallback = async (payload: unknown) => {
+    const configPayload = payload as Types.ConfigurationChangePayload
+    const changedFiles = configPayload?.changedFiles || []
+    const refName = configPayload?.refName || ""
+
+    if (
+      refName === `refs/heads/${configVersion}` &&
+      areFilesAffected(changedFiles, watchPaths)
+    ) {
+      await updateHandler()
+    }
+  }
+
+  mqttClient.subscribe(configurationChangeTopic, subscriptionHandler)
+}
+
+function areFilesAffected(filenames: string[], watchPaths: string[]) {
+  return filenames.some((filename) => {
+    return watchPaths.some((watchPath) => {
+      return filename === watchPath || filename.startsWith(`${watchPath}/`)
+    })
+  })
 }
 
 async function retrieveBootstrapData(
