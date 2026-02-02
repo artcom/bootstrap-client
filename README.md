@@ -12,22 +12,33 @@ npm install @artcom/bootstrap-client
 
 Bootstrap as follows:
 
-```javascript
-const bootstrap = require("@artcom/bootstrap-client")
+```typescript
+import { init, subscribeToConfigChange } from "@artcom/bootstrap-client"
 
-bootstrap(bootstrapUrl, serviceId).then(async ({ logger, mqttClient, queryConfig, data }) => {
-  // log something
-  logger.info("Hello world!")
+const { logger, mqttClient, queryConfig, data } = await init(bootstrapUrl, serviceId)
 
-  // publish "bar" to topic "foo"
-  mqttClient.publish("foo", "bar")
+// log something
+logger.info("Hello world!")
 
-  // query some configurations with (optional) options
-  const myConfig = await queryConfig("config/path", { version: "master", listFiles: false, includeCommitHash = false, parseJSON = true })
+// publish "bar" to topic "foo"
+mqttClient.publish("foo", "bar")
 
-  // use raw bootstrap data
-  logger.info(`I am running on device: ${data.device}`)
-})
+// query some configurations with (optional) options
+const myConfig = await queryConfig("config/path", { version: "master", listFiles: false, includeCommitHash = false, parseJSON = true })
+
+// use raw bootstrap data
+logger.info(`I am running on device: ${data.device}`)
+
+// subscribe to configuration changes
+subscribeToConfigChange(
+  mqttClient,
+  "device/config/changes", // The topic to listen on
+  ["config.json", "assets/"], // Watch specific files or directories
+  "master", // The config version to match
+  async () => {
+    logger.info("Configuration changed, reloading...")
+  }
+)
 ```
 
 The following additional options are supported:
