@@ -43,7 +43,7 @@ export interface QueryConfig {
 
 export type InitData<T extends BootstrapData = BootstrapData> = {
   readonly logger: Winston.Logger
-  readonly mqttClient: T extends { tcpBrokerUri: string } ? MqttClient : MqttClient | undefined
+  readonly mqttClient: MqttClient
   readonly httpClient: T extends { httpBrokerUri: string } ? HttpClient : HttpClient | undefined
   readonly queryConfig: T extends { configServerUri: string }
     ? QueryConfig

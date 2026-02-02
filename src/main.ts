@@ -30,12 +30,14 @@ async function init<T extends Types.BootstrapData = Types.BootstrapData>(
     debugBootstrapData,
   )) as T
 
+  if (!data.tcpBrokerUri) {
+    throw new Error("Bootstrap data does not contain a tcpBrokerUri")
+  }
+
   return {
     logger,
     data,
-    mqttClient: data.tcpBrokerUri
-      ? await connectMqttClient(serviceId, data.tcpBrokerUri, data.device, logger)
-      : undefined,
+    mqttClient: await connectMqttClient(serviceId, data.tcpBrokerUri, data.device, logger),
     httpClient: data.httpBrokerUri ? new HttpClient(data.httpBrokerUri) : undefined,
     queryConfig: data.configServerUri ? createQueryConfig(data.configServerUri) : undefined,
   } as Types.InitData<T>
