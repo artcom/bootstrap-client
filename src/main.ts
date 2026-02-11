@@ -130,6 +130,9 @@ async function connectMqttClient(
   mqttClient.underlyingClient.on("close", () => {
     logger.error("Disconnected from Broker")
   })
+  mqttClient.underlyingClient.on("reconnect", () => {
+    logger.info("Reconnecting to Broker")
+  })
   mqttClient.underlyingClient.on("error", () => {
     logger.error("Error Connecting to Broker")
   })
