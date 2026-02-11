@@ -8,7 +8,12 @@ export * from "./types"
 export async function init<T extends Types.BootstrapData = Types.BootstrapData>(
   url: string,
   serviceId: string,
-  { timeout = 2000, retryDelay = 10000, debugBootstrapData = undefined }: Types.Options = {},
+  {
+    timeout = 2000,
+    retryDelay = 10000,
+    debugBootstrapData = undefined,
+    mqttOptions = undefined,
+  }: Types.Options = {},
 ): Promise<Types.InitData<T>> {
   const logger = createLogger()
 
@@ -27,7 +32,13 @@ export async function init<T extends Types.BootstrapData = Types.BootstrapData>(
   return {
     logger,
     data,
-    mqttClient: await connectMqttClient(serviceId, data.tcpBrokerUri, data.device, logger),
+    mqttClient: await connectMqttClient(
+      serviceId,
+      data.tcpBrokerUri,
+      data.device,
+      logger,
+      mqttOptions,
+    ),
     httpClient: data.httpBrokerUri ? new HttpClient(data.httpBrokerUri) : undefined,
     queryConfig: data.configServerUri ? createQueryConfig(data.configServerUri) : undefined,
   } as Types.InitData<T>
@@ -120,11 +131,12 @@ async function connectMqttClient(
   tcpBrokerUri: string,
   device: string | undefined,
   logger: Winston.Logger,
+  mqttOptions?: Types.MqttClientOptions,
 ): Promise<MqttClient> {
   const clientId = createClientId(serviceId, device)
 
   logger.info("Connecting to Broker", { tcpBrokerUri, clientId })
-  const mqttClient = await MqttClient.connect(tcpBrokerUri, { clientId })
+  const mqttClient = await MqttClient.connect(tcpBrokerUri, { clientId, ...mqttOptions })
   logger.info("Connected to Broker")
 
   mqttClient.underlyingClient.on("close", () => {

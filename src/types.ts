@@ -1,5 +1,7 @@
 import { Winston } from "@artcom/logger"
-import { HttpClient, MqttClient } from "@artcom/mqtt-topping"
+import { HttpClient, MqttClient, MqttClientOptions } from "@artcom/mqtt-topping"
+
+export { HttpClient, MqttClient, MqttClientOptions }
 
 /**
  * Data needed to bootstrap the application, typically retrieved from the bootstrap server.
@@ -63,4 +65,6 @@ export type Options = {
   readonly retryDelay?: number
   /** Hardcoded bootstrap data for debugging purposes */
   readonly debugBootstrapData?: BootstrapData
+  /** Options passed to the MQTT client */
+  readonly mqttOptions?: MqttClientOptions
 }
