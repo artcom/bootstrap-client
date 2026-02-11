@@ -20,8 +20,7 @@
   "type": "commonjs",
   "dependencies": {
     "@artcom/logger": "^1.6.0",
-    "@artcom/mqtt-topping": "^4.0.4",
-    "axios": "^1.13.2"
+    "@artcom/mqtt-topping": "^4.0.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",

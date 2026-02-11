@@ -1,4 +1,3 @@
-import axios, { AxiosRequestConfig } from "axios"
 import { HttpClient, MqttClient, MessageCallback } from "@artcom/mqtt-topping"
 import { createLogger, Winston } from "@artcom/logger"
 
@@ -46,10 +45,7 @@ export function subscribeToConfigChange(
     const changedFiles = configPayload?.changedFiles || []
     const refName = configPayload?.refName || ""
 
-    if (
-      refName === `refs/heads/${configVersion}` &&
-      areFilesAffected(changedFiles, watchPaths)
-    ) {
+    if (refName === `refs/heads/${configVersion}` && areFilesAffected(changedFiles, watchPaths)) {
       await updateHandler()
     }
   }
@@ -94,7 +90,11 @@ async function retrieveBootstrapData(
 
   while (true) {
     try {
-      const { data } = await axios.get(url, { timeout })
+      const response = await fetch(url, { signal: AbortSignal.timeout(timeout) })
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      const data = await response.json()
       logger.info("Bootstrap data received", { ...data })
 
       return data
@@ -155,15 +155,19 @@ function createQueryConfig(configServerUri: string): Types.QueryConfig {
       parseJSON = true,
     } = params
 
-    const query: AxiosRequestConfig = {
-      url: `${configServerUri}/${encodeURIComponent(version)}/${configPath}?listFiles=${listFiles}`,
-      responseType: parseJSON ? "json" : "text",
+    const url = `${configServerUri}/${encodeURIComponent(version)}/${configPath}?listFiles=${listFiles}`
+
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
     }
 
-    return axios(query).then((response) =>
-      includeCommitHash
-        ? { data: response.data, commitHash: response.headers["git-commit-hash"] }
-        : response.data,
-    )
+    if (includeCommitHash) {
+      const commitHash = response.headers.get("git-commit-hash") || undefined
+      const data = parseJSON ? await response.json() : await response.text()
+      return { data, commitHash }
+    } else {
+      return parseJSON ? await response.json() : await response.text()
+    }
   }
 }
