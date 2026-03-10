@@ -10,6 +10,8 @@ Install this library via npm:
 npm install @artcom/bootstrap-client
 ```
 
+This package now targets Node.js 22+ and is published as ESM.
+
 Bootstrap as follows:
 
 ```typescript
@@ -24,7 +26,12 @@ logger.info("Hello world!")
 mqttClient.publish("foo", "bar")
 
 // query some configurations with (optional) options
-const myConfig = await queryConfig("config/path", { version: "master", listFiles: false, includeCommitHash = false, parseJSON = true })
+const myConfig = await queryConfig("config/path", {
+  version: "master",
+  listFiles: false,
+  includeCommitHash: false,
+  parseJSON: true,
+})
 
 // use raw bootstrap data
 logger.info(`I am running on device: ${data.device}`)
@@ -46,6 +53,8 @@ The following additional options are supported:
 - `timeout`: is the time in milliseconds until the query times out, default: `2000`
 - `retryDelay`: is the time in milliseconds until the query is sent again, default: `10000`
 - `debugBootstrapData`: can be set to skip querying data from the [bootstrap server](https://github.com/artcom/bootstrap-server) for debugging, default: `null`
+
+Consumers must run on Node.js 22 or newer and import the package from an ESM environment.
 
 ## Bootstrap Data
 

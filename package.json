@@ -1,8 +1,16 @@
 {
   "name": "@artcom/bootstrap-client",
-  "version": "6.1.0",
+  "version": "7.0.0",
   "description": "A library which queries and processes bootstrap data from a bootstrap server.",
-  "main": "lib/main.js",
+  "main": "./lib/main.js",
+  "types": "./lib/main.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/main.d.ts",
+      "import": "./lib/main.js",
+      "default": "./lib/main.js"
+    }
+  },
   "files": [
     "lib/"
   ],
@@ -17,10 +25,13 @@
     "type": "git",
     "url": "https://github.com/artcom/bootstrap-client.git"
   },
-  "type": "commonjs",
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "dependencies": {
     "@artcom/logger": "^1.6.0",
-    "@artcom/mqtt-topping": "^4.0.4"
+    "@artcom/mqtt-topping": "^5.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",

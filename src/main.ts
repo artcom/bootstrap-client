@@ -1,9 +1,11 @@
-import { HttpClient, MqttClient, MessageCallback } from "@artcom/mqtt-topping"
-import { createLogger, Winston } from "@artcom/logger"
+import { HttpClient, MqttClient } from "@artcom/mqtt-topping"
+import type { MessageCallback } from "@artcom/mqtt-topping"
+import { createLogger } from "@artcom/logger"
+import type { Winston } from "@artcom/logger"
 
-import * as Types from "./types"
+import type * as Types from "./types.js"
 
-export * from "./types"
+export * from "./types.js"
 
 export async function init<T extends Types.BootstrapData = Types.BootstrapData>(
   url: string,
