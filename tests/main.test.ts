@@ -4,6 +4,7 @@ import { afterEach, describe, it, mock } from "node:test"
 import { MqttClient } from "@artcom/mqtt-topping"
 
 import { init } from "../src/main.js"
+import type { MqttOptionsFactory } from "../src/main.js"
 
 const debugBootstrapData = {
   tcpBrokerUri: "tcp://broker:1883",
@@ -57,12 +58,12 @@ describe("init", () => {
   describe("mqttOptions function", () => {
     it("receives logger, data, httpClient and queryConfig", async () => {
       mockConnect()
-      const factory = mock.fn(() => ({}))
+      const factory = mock.fn<MqttOptionsFactory>(() => ({}))
 
       const result = await init("", "service", { debugBootstrapData, mqttOptions: factory })
 
       assert.equal(factory.mock.callCount(), 1)
-      const context = factory.mock.calls[0].arguments[0]
+      const [context] = factory.mock.calls[0].arguments
       assert.equal(context.logger, result.logger)
       assert.equal(context.data, result.data)
       assert.equal(context.httpClient, result.httpClient)
@@ -111,7 +112,7 @@ describe("init", () => {
 
     it("provides an undefined queryConfig without configServerUri", async () => {
       mockConnect()
-      const factory = mock.fn(() => ({}))
+      const factory = mock.fn<MqttOptionsFactory>(() => ({}))
 
       await init("", "service", {
         debugBootstrapData: { tcpBrokerUri: "tcp://broker:1883" },
