@@ -15,7 +15,7 @@ export async function init<T extends Types.BootstrapData = Types.BootstrapData>(
     retryDelay = 10000,
     debugBootstrapData = undefined,
     mqttOptions = undefined,
-  }: Types.Options = {},
+  }: Types.Options<T> = {},
 ): Promise<Types.InitData<T>> {
   const logger = createLogger()
 
@@ -31,6 +31,16 @@ export async function init<T extends Types.BootstrapData = Types.BootstrapData>(
     throw new Error("Bootstrap data does not contain a tcpBrokerUri")
   }
 
+  const httpClient = data.httpBrokerUri ? new HttpClient(data.httpBrokerUri) : undefined
+  const queryConfig = data.configServerUri ? createQueryConfig(data.configServerUri) : undefined
+  const resolvedMqttOptions =
+    typeof mqttOptions === "function"
+      ? await mqttOptions({ logger, data, httpClient, queryConfig } as Omit<
+          Types.InitData<T>,
+          "mqttClient"
+        >)
+      : mqttOptions
+
   return {
     logger,
     data,
@@ -39,10 +49,10 @@ export async function init<T extends Types.BootstrapData = Types.BootstrapData>(
       data.tcpBrokerUri,
       data.device,
       logger,
-      mqttOptions,
+      resolvedMqttOptions,
     ),
-    httpClient: data.httpBrokerUri ? new HttpClient(data.httpBrokerUri) : undefined,
-    queryConfig: data.configServerUri ? createQueryConfig(data.configServerUri) : undefined,
+    httpClient,
+    queryConfig,
   } as Types.InitData<T>
 }
 
