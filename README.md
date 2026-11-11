@@ -58,7 +58,7 @@ The following additional options are supported:
 ```typescript
 const { mqttClient } = await init<{ configServerUri: string }>(bootstrapUrl, serviceId, {
   mqttOptions: async ({ queryConfig }) => {
-    const { willTopic } = await queryConfig("device/config.json")
+    const { willTopic } = await queryConfig<{ willTopic: string }>("device/config.json")
 
     return {
       will: { topic: willTopic, payload: "offline", qos: 1, retain: true, stringifyJson: false },
