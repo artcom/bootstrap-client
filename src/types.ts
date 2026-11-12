@@ -40,9 +40,13 @@ export type InitData<T extends BootstrapData = BootstrapData> = {
   readonly data: T
 }
 
-export type Options = {
+export type MqttOptionsFactory<T extends BootstrapData = BootstrapData> = (
+  context: Omit<InitData<T>, "mqttClient">,
+) => MqttClientOptions | Promise<MqttClientOptions>
+
+export type Options<T extends BootstrapData = BootstrapData> = {
   readonly timeout?: number
   readonly retryDelay?: number
   readonly debugBootstrapData?: BootstrapData
-  readonly mqttOptions?: MqttClientOptions
+  readonly mqttOptions?: MqttClientOptions | MqttOptionsFactory<T>
 }

@@ -53,6 +53,21 @@ The following additional options are supported:
 - `timeout`: is the time in milliseconds until the query times out, default: `2000`
 - `retryDelay`: is the time in milliseconds until the query is sent again, default: `10000`
 - `debugBootstrapData`: can be set to skip querying data from the [bootstrap server](https://github.com/artcom/bootstrap-server) for debugging, default: `null`
+- `mqttOptions`: options passed to the MQTT client, merged after the generated `clientId`. Either an object or a function (sync or async) that is called once after the bootstrap data was retrieved and before connecting. It receives `{ logger, data, httpClient, queryConfig }`, so options can depend on configuration, e.g. a last will:
+
+```typescript
+const { mqttClient } = await init<{ configServerUri: string }>(bootstrapUrl, serviceId, {
+  mqttOptions: async ({ queryConfig }) => {
+    const { willTopic } = await queryConfig<{ willTopic: string }>("device/config.json")
+
+    return {
+      will: { topic: willTopic, payload: "offline", qos: 1, retain: true, stringifyJson: false },
+    }
+  },
+})
+```
+
+`queryConfig` is `undefined` if the bootstrap data has no `configServerUri`; pass a type with `configServerUri: string` to `init` (as above) to make it non-optional.
 
 Consumers must run on Node.js 22 or newer and import the package from an ESM environment.
 
