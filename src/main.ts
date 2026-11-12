@@ -35,7 +35,8 @@ export async function init<T extends Types.BootstrapData = Types.BootstrapData>(
   const queryConfig = data.configServerUri ? createQueryConfig(data.configServerUri) : undefined
   const resolvedMqttOptions =
     typeof mqttOptions === "function"
-      ? await mqttOptions({ logger, data, httpClient, queryConfig } as Omit<
+      ? // cast needed: httpClient/queryConfig are conditional on T, which TypeScript cannot resolve here
+        await mqttOptions({ logger, data, httpClient, queryConfig } as Omit<
           Types.InitData<T>,
           "mqttClient"
         >)
