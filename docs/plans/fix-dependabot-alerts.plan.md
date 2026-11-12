@@ -36,7 +36,7 @@
 - 2. `ws` >=8.21.0 and `ip-address` >10.7.3 in lockfile.
 - 3. Diff touches only `package-lock.json`, apart from this plan.
 - 4. Lint, test, build pass.
-- 5. All 18 Dependabot alerts closed on GitHub.
+- 5. All 18 Dependabot alerts closed on GitHub, except the accepted minimatch one (criterion 1).
 
 ## Risks and open questions
 - Runtime deps (`ws`, `ip-address`) are bundled via lockfile only; consumers of the published lib resolve their own versions, so the lockfile fix does not reach them.
