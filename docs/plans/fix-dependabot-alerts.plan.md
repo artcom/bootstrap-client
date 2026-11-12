@@ -26,13 +26,13 @@
 - No new unit tests: lockfile-only, no source change; existing suite covers regressions.
 
 ## Verification
-- `npm audit` reports 0 vulnerabilities.
+- `npm audit` reports only the accepted minimatch residual (see acceptance criterion 1).
 - `npm run lint` (note: it uses `--fix`; check `git status` for stray edits).
 - `npm test`, then `npm run build`.
 - After merge to master, Dependabot alerts auto-close (rescan can take minutes).
 
 ## Acceptance criteria
-- 1. `npm audit` shows 0 vulnerabilities.
+- 1. `npm audit` shows only the accepted residual: minimatch 10.x under `@typescript-eslint/typescript-estree` (GHSA-g3hv-75wg-m249, dev-only, no in-range fix; latest typescript-eslint 8.72.2 pins `^10`).
 - 2. `ws` >=8.21.0 and `ip-address` >10.7.3 in lockfile.
 - 3. Diff touches only `package-lock.json`.
 - 4. Lint, test, build pass.
