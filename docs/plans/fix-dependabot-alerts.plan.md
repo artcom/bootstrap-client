@@ -40,6 +40,6 @@
 
 ## Risks and open questions
 - Runtime deps (`ws`, `ip-address`) are bundled via lockfile only; consumers of the published lib resolve their own versions, so the lockfile fix does not reach them.
-- Open: publish a patch release (`npm version patch`)? Not warranted by default; consumers get fixes on reinstall within ranges. Raising `mqtt-topping` minimum is not possible without a package.json change.
+- Decided: no patch release; consumers get fixes on reinstall within ranges. Raising `mqtt-topping` minimum is not possible without a package.json change.
 - Open: if `ws >=8.21.0` is not allowed by `mqtt` ranges after refresh, fall back to `overrides`.
 - Caveat: could not run `npm ls`/`npm view`/`npm audit` here; the audit-fix claim comes from the caller's dry-run.
