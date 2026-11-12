@@ -3,7 +3,7 @@
 ## Context
 - bootstrap-client (artcom/bootstrap-client, master at v7.1.0): 18 open Dependabot alerts, all transitive.
 - No repo rules: no CLAUDE.md, no `.claude/rules/`; README has no release process.
-- Read-only investigation (no shell available); paths read from `package-lock.json`, ranges checked by hand.
+- Result: `npm audit fix` applied; lockfile now has `ws` 8.22.2 and `ip-address` 10.7.6; `npm audit` leaves only the accepted minimatch/typescript-eslint residual.
 - Goal: lockfile-only refresh; no `package.json` edits, no `overrides`.
 
 ## Resolution per alert (all in range)
@@ -19,7 +19,7 @@
 ## Implementation steps
 - Branch off master per user convention (repo sets none): `fix/` prefix, e.g. `fix/dependabot-alerts`.
 - Run `npm audit fix` (or `npm update` if it leaves residue); commit `package-lock.json` only.
-- If something remains: `npm update <pkg>` for it; add `overrides` only if no in-range version exists (not expected).
+- If something remains: `npm update <pkg>` for it.
 - Review lockfile diff: only version/resolved/integrity changes, no `package.json` change.
 
 ## Tests
@@ -41,5 +41,3 @@
 ## Risks and open questions
 - Runtime deps (`ws`, `ip-address`) are bundled via lockfile only; consumers of the published lib resolve their own versions, so the lockfile fix does not reach them.
 - Decided: no patch release; consumers get fixes on reinstall within ranges. Raising `mqtt-topping` minimum is not possible without a package.json change.
-- Open: if `ws >=8.21.0` is not allowed by `mqtt` ranges after refresh, fall back to `overrides`.
-- Caveat: could not run `npm ls`/`npm view`/`npm audit` here; the audit-fix claim comes from the caller's dry-run.
