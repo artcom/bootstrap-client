@@ -15,7 +15,7 @@
     "lib/"
   ],
   "scripts": {
-    "format": "prettier --write src",
+    "format": "prettier --write src tests",
     "lint": "eslint src tests --fix",
     "test": "tsc -p tsconfig.test.json && tsx --test \"tests/**/*.test.ts\"",
     "build": "tsc",
