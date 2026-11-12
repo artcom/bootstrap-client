@@ -39,5 +39,6 @@ it("types queryConfig as optional unless configServerUri is declared", () => {
         return {}
       },
     })
+  // the value of this test is the compile-time @ts-expect-error above; the runtime assert is only a placeholder
   assert.equal(typeof withoutConfigServer, "function")
 })
