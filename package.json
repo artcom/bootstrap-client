@@ -17,7 +17,7 @@
   "scripts": {
     "format": "prettier --write src tests",
     "lint": "eslint src tests --fix",
-    "test": "tsc -p tsconfig.test.json && tsx --test \"tests/**/*.test.ts\"",
+    "test": "tsc -p tsconfig.test.json && tsx --import ./tests/silenceLogger.ts --test \"tests/**/*.test.ts\"",
     "build": "tsc",
     "build:watch": "tsc -w",
     "prepublishOnly": "npm run lint && npm run build"
