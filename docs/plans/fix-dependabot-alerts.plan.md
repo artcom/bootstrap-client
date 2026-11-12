@@ -34,7 +34,7 @@
 ## Acceptance criteria
 - 1. `npm audit` shows only the accepted residual: minimatch 10.x under `@typescript-eslint/typescript-estree` (GHSA-g3hv-75wg-m249, dev-only, no in-range fix; latest typescript-eslint 8.72.2 pins `^10`).
 - 2. `ws` >=8.21.0 and `ip-address` >10.7.3 in lockfile.
-- 3. Diff touches only `package-lock.json`.
+- 3. Diff touches only `package-lock.json`, apart from this plan.
 - 4. Lint, test, build pass.
 - 5. All 18 Dependabot alerts closed on GitHub.
 
