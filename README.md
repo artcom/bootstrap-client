@@ -10,7 +10,7 @@ Install this library via npm:
 npm install @artcom/bootstrap-client
 ```
 
-This package now targets Node.js 22+ and is published as ESM.
+This package now targets Node.js 26+ and is published as ESM.
 
 Bootstrap as follows:
 
@@ -69,7 +69,7 @@ const { mqttClient } = await init<{ configServerUri: string }>(bootstrapUrl, ser
 
 `queryConfig` is `undefined` if the bootstrap data has no `configServerUri`; pass a type with `configServerUri: string` to `init` (as above) to make it non-optional.
 
-Consumers must run on Node.js 22 or newer and import the package from an ESM environment.
+Consumers must run on Node.js 26 or newer and import the package from an ESM environment.
 
 ## Bootstrap Data
 

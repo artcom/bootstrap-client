@@ -28,23 +28,23 @@
   },
   "type": "module",
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=26.0.0"
   },
   "dependencies": {
     "@artcom/logger": "^1.6.0",
-    "@artcom/mqtt-topping": "^5.0.0"
+    "@artcom/mqtt-topping": "^5.0.1"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.2",
-    "@types/node": "^25.0.9",
-    "@types/ws": "^8.18.1",
-    "eslint": "^9.39.2",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.6",
+    "@types/ws": "^8.18.2",
+    "eslint": "^10.14.0",
     "eslint-config-prettier": "^10.1.8",
-    "globals": "^17.0.0",
-    "prettier": "^3.8.0",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.1",
     "tsx": "^4.23.15",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.53.1"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.2"
   },
   "license": "MIT",
   "keywords": [

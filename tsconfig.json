@@ -6,6 +6,7 @@
     "declaration": true,
     "sourceMap": true,
     "outDir": "lib",
+    "rootDir": "src",
     "strict": true,
     "noImplicitAny": true,
     "allowSyntheticDefaultImports": true,
