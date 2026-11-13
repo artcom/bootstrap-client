@@ -10,7 +10,7 @@
 2. README lines 13 and 72 say Node.js 26.
 3. `npm outdated` shows only `typescript` 7 held back.
 4. `npm run lint`, `npm run build`, `npm test` pass.
-5. `npm audit` shows no new findings.
+5. `npm audit` shows no new advisory; only the accepted minimatch residual GHSA-g3hv-75wg-m249 (dev-only, now also via eslint 10).
 6. `git diff` after `npm run lint` shows no unintended `--fix` changes.
 
 ## Design
